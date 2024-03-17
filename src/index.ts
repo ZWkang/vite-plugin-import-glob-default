@@ -1,13 +1,16 @@
 import type { Plugin, ResolvedConfig } from 'vite';
-import { createLogger } from 'vite'
+import _debug from 'debug'
 import { parseExpressionAt } from 'acorn'
 import { findNodeAt } from 'acorn-walk'
 import MagicString from 'magic-string'
 import type {
   CallExpression,
+  SequenceExpression,
+  MemberExpression
 } from 'estree'
 
-const logger = createLogger()
+// const logger = createLogger()
+const debug = _debug('vite-plugin-import-glob-default')
 
 interface Options {
   [key: string]: any;
@@ -74,21 +77,56 @@ function VitePlugin(options: Options = {}): Plugin {
       // eslint-disable-next-line no-param-reassign
       id = slash(id);
       if (/node_modules/g.test(id)) return;
-      logger.info(`transform id: ${id}`,)
       if (!code.includes('import.meta.globDefault')) return;
+
+      debug(`transform id: ${id}`,)
 
       const matches = Array.from(code.matchAll(importGlobDefault))
       const s = new MagicString(code);
+      let lastTokenPos: number | undefined
+      let ast: CallExpression | SequenceExpression | MemberExpression
 
-      matches.forEach(match => {
-        const ast = parseExpressionAt(code,
-          match.index!, {
-          ecmaVersion: 'latest',
-          sourceType: 'module',
-          ranges: true,
-        })
+      matches.forEach((match, idx) => {
+        const start = match.index!;
 
-        const found = findNodeAt(ast, match.index, undefined, 'CallExpression');
+        // copy from https://github.com/vitejs/vite/blob/de60f1e3d1eb03167362cf8ce0c6c4071430f812/packages/vite/src/node/plugins/importMetaGlob.ts#L242
+        try {
+          ast = parseExpressionAt(code,
+            match.index!, {
+            ecmaVersion: 'latest',
+            sourceType: 'module',
+            ranges: true,
+            onToken: (token) => {
+              lastTokenPos = token.end
+            },
+          }) as any;
+        } catch (e) {
+          const _e = e as any
+          if (_e?.message?.startsWith('Unterminated string constant'))
+            return undefined!
+          if (lastTokenPos === null || lastTokenPos === undefined || lastTokenPos <= start) throw _e
+
+          // tailing comma in object or array will make the parser think it's a comma operation
+          // we try to parse again removing the comma
+          try {
+            const statement = code.slice(start, lastTokenPos).replace(/[,\s]*$/, '')
+            ast = parseExpressionAt(
+              ' '.repeat(start) + statement, // to keep the ast position
+              start,
+              {
+                ecmaVersion: 'latest',
+                sourceType: 'module',
+                ranges: true,
+              },
+            ) as any
+          } catch {
+            // throw _e
+            this.error(_e);
+          }
+        }
+        // console.log(ast);
+
+        const found = findNodeAt(ast as any, match.index, undefined, 'CallExpression');
         const node = found?.node as undefined | CallExpression;
         if (!node) return;
 
