@@ -1,0 +1,17 @@
+{
+  "name": "vite-plugin-import-glob-default-example-main",
+  "version": "0.0.0",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "serve": "vite preview"
+  },
+  "devDependencies": {
+    "vite": "^3.0.0"
+  },
+  "dependencies": {
+    "@vitejs/plugin-vue": "^5.0.4",
+    "vite-plugin-vue": "^0.0.1",
+    "vue": "^3.2.41"
+  }
+}
