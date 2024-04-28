@@ -12,9 +12,9 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.coim/zwkang/vite-plugin-import-glob-default.git"
+    "url": "https://github.com/zwkang/vite-plugin-import-glob-default"
   },
-  "bugs": "https://github.coim/zwkang/vite-plugin-import-glob-default/issues",
+  "bugs": "https://github.com/zwkang/vite-plugin-import-glob-default/issues",
   "keywords": [],
   "sideEffects": false,
   "exports": {
