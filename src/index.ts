@@ -9,6 +9,8 @@ import type { CallExpression, SequenceExpression, MemberExpression } from 'estre
 const debug = _debug('vite-plugin-import-glob-default');
 
 interface Options {
+  // [key: string]: any;
+  eagerMode?: 'all' | 'none' | 'build';
   [key: string]: any;
 }
 
@@ -58,6 +60,8 @@ export function slash(p: string): string {
 }
 
 function VitePlugin(options: Options = {}): Plugin {
+  const { allEager = 'build' } = options;
+
   let config: undefined | ResolvedConfig;
   return {
     name: `vite-plugin-import-glob-default`,
@@ -125,11 +129,13 @@ function VitePlugin(options: Options = {}): Plugin {
 
         const end = node!.range![1];
 
+        const eager = allEager === 'build' ? config?.command === 'build' : allEager === 'all' ? true : false;
+
         let options: Record<string, any> = {
           import: 'default',
 
           // build mode default is eager true
-          eager: config?.command === 'build',
+          eager: eager,
         };
 
         if (arg2 && arg2.type === 'ObjectExpression') {
