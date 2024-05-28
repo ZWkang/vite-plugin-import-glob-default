@@ -60,7 +60,7 @@ export function slash(p: string): string {
 }
 
 function VitePlugin(options: Options = {}): Plugin {
-  const { allEager = 'build' } = options;
+  const { eagerMode = 'build' } = options;
 
   let config: undefined | ResolvedConfig;
   return {
@@ -129,7 +129,7 @@ function VitePlugin(options: Options = {}): Plugin {
 
         const end = node!.range![1];
 
-        const eager = allEager === 'build' ? config?.command === 'build' : allEager === 'all' ? true : false;
+        const eager = eagerMode === 'build' ? config?.command === 'build' : eagerMode === 'all' ? true : false;
 
         let options: Record<string, any> = {
           import: 'default',
