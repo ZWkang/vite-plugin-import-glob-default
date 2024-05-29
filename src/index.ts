@@ -146,6 +146,14 @@ function VitePlugin(options: Options = {}): Plugin {
             ...obj,
           };
         }
+
+        if (options['always'] === 'dynamic') {
+          options.eager = false;
+        } else if (options['always'] === 'eager') {
+          options.eager = true;
+        }
+
+        delete options['always'];
         s.overwrite(
           match.index!,
           end,
