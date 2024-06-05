@@ -2,7 +2,7 @@
   "name": "vite-plugin-import-glob-default",
   "version": "0.1.1",
   "packageManager": "pnpm@7.33.7",
-  "description": "> description:",
+  "description": "provide a way to config module usage",
   "publishConfig": {
     "access": "public"
   },
