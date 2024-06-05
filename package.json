@@ -6,6 +6,7 @@
   "publishConfig": {
     "access": "public"
   },
+  "type": "module",
   "author": {
     "name": "zwkang",
     "email": "kang95630@gmail.com"
