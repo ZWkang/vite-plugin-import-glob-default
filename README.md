@@ -12,6 +12,7 @@ import Plugin from 'vite-plugin-import-glob-default';
 Plugin({
   eagerMode: 'all' | 'none' | 'build',
 });
+
 // build => eager = true when in build mode, eager = false when in dev mode
 // all => eager = true always
 // none => eager = false always
