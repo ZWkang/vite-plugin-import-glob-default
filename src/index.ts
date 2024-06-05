@@ -8,7 +8,7 @@ import type { CallExpression, SequenceExpression, MemberExpression } from 'estre
 // const logger = createLogger()
 const debug = _debug('vite-plugin-import-glob-default');
 
-interface Options {
+export interface Options {
   // [key: string]: any;
   eagerMode?: 'all' | 'none' | 'build';
   [key: string]: any;
