@@ -1,8 +1,28 @@
 # vite-plugin-import-glob-default
 
-> description: import eager in build, import lazy in dev
+> provide a way to config module usage
 
 ## Usage
+
+### Setting case
+
+```typescript
+import Plugin from 'vite-plugin-import-glob-default';
+
+Plugin({
+  eagerMode: 'all' | 'none' | 'build',
+});
+// build => eager = true when in build mode, eager = false when in dev mode
+// all => eager = true always
+// none => eager = false always
+
+import.meta.globalDefault('./module.ts', { always: 'dynamic' | 'eager' });
+
+// always: 'dynamic' => always use dynamic import
+// always: 'eager' => always use eager import
+```
+
+### Principle
 
 ```typescript
 import.meta.globDefault('a file path', config);
